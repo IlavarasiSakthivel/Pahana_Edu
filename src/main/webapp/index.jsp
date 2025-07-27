@@ -23,6 +23,7 @@
       <input id="password" name="password" type="password" required class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" />
     </div>
     <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition">Login</button>
+    <p>Don't have an account? <a href="SignUpServlet">Sign Up</a></p>
   </form>
 </div>
 </body>
