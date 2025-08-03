@@ -1,4 +1,4 @@
-package com.example.demo; // Or wherever your main class is located
+package com.example.demo.servlet; // Or wherever your main class is located
 
 import com.example.demo.entity.Student;
 import jakarta.persistence.EntityManager;
