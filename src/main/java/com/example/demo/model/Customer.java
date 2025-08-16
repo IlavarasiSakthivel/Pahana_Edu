@@ -1,81 +1,38 @@
 package com.example.demo.model;
 
-import java.sql.Timestamp;
+import java.time.LocalDate;
 
 public class Customer {
-    private String accountNo;
+    private String accountNumber;
     private String name;
     private String address;
-    private String phone;
+    private String telephone;
     private int unitsConsumed;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
+    private LocalDate registrationDate;
 
-    // Constructors, getters, and setters
+    // Constructors, getters, setters
     public Customer() {}
 
-    public Customer(String accountNo, String name, String address, String phone, int unitsConsumed) {
-        this.accountNo = accountNo;
+    public Customer(String accountNumber, String name, String address, String telephone, int unitsConsumed, LocalDate registrationDate) {
+        this.accountNumber = accountNumber;
         this.name = name;
         this.address = address;
-        this.phone = phone;
+        this.telephone = telephone;
         this.unitsConsumed = unitsConsumed;
+        this.registrationDate = registrationDate;
     }
 
-    // Getters and setters for all fields
-    public String getAccountNo() {
-        return accountNo;
-    }
-
-    public void setAccountNo(String accountNo) {
-        this.accountNo = accountNo;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public int getUnitsConsumed() {
-        return unitsConsumed;
-    }
-
-    public void setUnitsConsumed(int unitsConsumed) {
-        this.unitsConsumed = unitsConsumed;
-    }
-
-    public Timestamp getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Timestamp getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Timestamp updatedAt) {
-        this.updatedAt = updatedAt;
-    }
+    // Getters and setters
+    public String getAccountNumber() { return accountNumber; }
+    public void setAccountNumber(String accountNumber) { this.accountNumber = accountNumber; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
+    public String getTelephone() { return telephone; }
+    public void setTelephone(String telephone) { this.telephone = telephone; }
+    public int getUnitsConsumed() { return unitsConsumed; }
+    public void setUnitsConsumed(int unitsConsumed) { this.unitsConsumed = unitsConsumed; }
+    public LocalDate getRegistrationDate() { return registrationDate; }
+    public void setRegistrationDate(LocalDate registrationDate) { this.registrationDate = registrationDate; }
 }

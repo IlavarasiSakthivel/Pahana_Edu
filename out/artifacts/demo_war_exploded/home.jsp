@@ -18,7 +18,7 @@
                     <span class="font-bold text-xl">Pahana Edu</span>
                 </div>
                 <div class="hidden md:ml-6 md:flex md:space-x-8">
-                    <a href="${pageContext.request.contextPath}/home.jsp" class="border-indigo-500 text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                    <a href="${pageContext.request.contextPath}/dashboard" class="border-indigo-500 text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                         Dashboard
                     </a>
                     <a href="${pageContext.request.contextPath}/customers/list" class="border-transparent text-indigo-200 hover:border-gray-300 hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
@@ -45,13 +45,11 @@
         </div>
     </div>
 </nav>
-
 <!-- Main Content -->
 <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
     <div class="px-4 py-6 sm:px-0">
         <div class="border-4 border-dashed border-gray-200 rounded-lg p-6">
             <h1 class="text-2xl font-semibold text-gray-800 mb-6">Dashboard</h1>
-
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div class="bg-white overflow-hidden shadow rounded-lg">
                     <div class="px-4 py-5 sm:p-6">
@@ -80,7 +78,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="bg-white overflow-hidden shadow rounded-lg">
                     <div class="px-4 py-5 sm:p-6">
                         <div class="flex items-center">
@@ -108,7 +105,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="bg-white overflow-hidden shadow rounded-lg">
                     <div class="px-4 py-5 sm:p-6">
                         <div class="flex items-center">
@@ -136,7 +132,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="bg-white shadow overflow-hidden sm:rounded-lg mb-8">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">Quick Actions</h3>

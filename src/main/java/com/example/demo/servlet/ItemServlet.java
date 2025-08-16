@@ -1,5 +1,6 @@
 package com.example.demo.servlet;
 
+import com.example.demo.dao.DAOFactory;
 import com.example.demo.dao.ItemDAO;
 import com.example.demo.model.Item;
 import jakarta.servlet.ServletException;
@@ -8,95 +9,115 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.util.List;
 
-@WebServlet("/items/*")
+@WebServlet("/items")
 public class ItemServlet extends HttpServlet {
     private ItemDAO itemDAO;
 
     @Override
-    public void init() throws ServletException {
-        super.init();
-        itemDAO = new ItemDAO();
+    public void init() {
+        itemDAO = DAOFactory.getItemDAO();
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String pathInfo = request.getPathInfo();
-
-        try {
-            if (pathInfo == null || pathInfo.equals("/list")) {
-                listItems(request, response);
-            } else if (pathInfo.equals("/new")) {
-                showNewForm(request, response);
-            } else if (pathInfo.equals("/edit")) {
-                showEditForm(request, response);
-            } else {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            }
-        } catch (SQLException e) {
-            throw new ServletException("Database error", e);
-        }
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String pathInfo = request.getPathInfo();
-
-        try {
-            if (pathInfo.equals("/add")) {
-                addItem(request, response);
-            } else if (pathInfo.equals("/update")) {
-                updateItem(request, response);
-            } else {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            }
-        } catch (SQLException e) {
-            throw new ServletException("Database error", e);
-        }
-    }
-
-    private void listItems(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, ServletException, IOException {
-        List<Item> items = itemDAO.getAllItems();
-        request.setAttribute("items", items);
-        request.getRequestDispatcher("/item/list.jsp").forward(request, response);
-    }
-
-    private void showNewForm(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/item/form.jsp").forward(request, response);
+        String action = request.getParameter("action");
+
+        try {
+            if (action == null) {
+                // List all items
+                List<Item> items = itemDAO.getAllItems();
+                request.setAttribute("items", items);
+                request.getRequestDispatcher("/items/list.jsp").forward(request, response);
+            } else if ("new".equals(action)) {
+                // Show new item form
+                request.getRequestDispatcher("/items/form.jsp").forward(request, response);
+            } else if ("edit".equals(action)) {
+                // Show edit item form
+                int id = Integer.parseInt(request.getParameter("id"));
+                Item item = itemDAO.getItemById(id);
+                request.setAttribute("item", item);
+                request.getRequestDispatcher("/items/form.jsp").forward(request, response);
+            }
+        } catch (Exception e) {
+            throw new ServletException("Database error", e);
+        }
     }
 
-    private void showEditForm(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, ServletException, IOException {
-        String itemId = request.getParameter("itemId");
-        Item existingItem = itemDAO.getItem(itemId);
-        request.setAttribute("item", existingItem);
-        request.getRequestDispatcher("/item/form.jsp").forward(request, response);
-    }
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String action = request.getParameter("action");
 
-    private void addItem(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException {
-        String itemId = request.getParameter("itemId");
-        String name = request.getParameter("name");
-        BigDecimal price = new BigDecimal(request.getParameter("price"));
+        try {
+            if ("save".equals(action)) {
+                // Save or update item
+                String idStr = request.getParameter("id");
+                String name = request.getParameter("name");
+                String description = request.getParameter("description");
+                String priceStr = request.getParameter("price");
+                String stockStr = request.getParameter("stockQuantity");
+                String category = request.getParameter("category");
 
-        Item newItem = new Item(itemId, name, price);
-        itemDAO.addItem(newItem);
-        response.sendRedirect(request.getContextPath() + "/items/list");
-    }
+                // Validate input
+                if (name == null || name.trim().isEmpty()) {
+                    request.setAttribute("errorMessage", "Item name is required");
+                    request.getRequestDispatcher("/items/form.jsp").forward(request, response);
+                    return;
+                }
 
-    private void updateItem(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException {
-        String itemId = request.getParameter("itemId");
-        String name = request.getParameter("name");
-        BigDecimal price = new BigDecimal(request.getParameter("price"));
+                double price = 0;
+                try {
+                    price = Double.parseDouble(priceStr);
+                    if (price <= 0) {
+                        throw new NumberFormatException();
+                    }
+                } catch (NumberFormatException e) {
+                    request.setAttribute("errorMessage", "Price must be a positive number");
+                    request.getRequestDispatcher("/items/form.jsp").forward(request, response);
+                    return;
+                }
 
-        Item item = new Item(itemId, name, price);
-        itemDAO.updateItem(item);
-        response.sendRedirect(request.getContextPath() + "/items/list");
+                int stockQuantity = 0;
+                try {
+                    stockQuantity = Integer.parseInt(stockStr);
+                    if (stockQuantity < 0) {
+                        throw new NumberFormatException();
+                    }
+                } catch (NumberFormatException e) {
+                    request.setAttribute("errorMessage", "Stock quantity must be a non-negative number");
+                    request.getRequestDispatcher("/items/form.jsp").forward(request, response);
+                    return;
+                }
+
+                Item item = new Item();
+                item.setName(name);
+                item.setDescription(description);
+                item.setPrice(price);
+                item.setStockQuantity(stockQuantity);
+                item.setCategory(category);
+
+                // Check if it's a new item or update
+                if (idStr == null || idStr.isEmpty()) {
+                    // New item
+                    itemDAO.saveItem(item);
+                } else {
+                    // Update existing item
+                    item.setId(Integer.parseInt(idStr));
+                    itemDAO.updateItem(item);
+                }
+
+                response.sendRedirect(request.getContextPath() + "/items");
+            } else if ("delete".equals(action)) {
+                // Delete item
+                int id = Integer.parseInt(request.getParameter("id"));
+                itemDAO.deleteItem(id);
+                response.sendRedirect(request.getContextPath() + "/items");
+            }
+        } catch (Exception e) {
+            throw new ServletException("Database error", e);
+        }
     }
 }

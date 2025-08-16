@@ -1,70 +1,103 @@
-<%@ include file="head.jsp" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Sign Up</title>
+    <title>Sign Up - Pahana Edu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center bg-gray-50">
-<div class="bg-white p-8 shadow-lg rounded-lg w-full max-w-md">
-    <h2 class="text-2xl font-bold mb-6 text-rose-600 text-center">Create an Account</h2>
-
-    <% String error = (String) session.getAttribute("errorMessage"); %>
-    <% if(error != null) { %>
-    <div class="bg-rose-100 border border-rose-400 text-rose-700 px-4 py-2 rounded mb-4 text-center">
-        <%= error %>
+<body class="min-h-screen flex items-center justify-center bg-gray-100">
+<div class="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
+    <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-sky-800">Pahana Edu</h1>
+        <p class="text-gray-600 mt-2">Staff Registration</p>
     </div>
-    <% session.removeAttribute("errorMessage"); %>
+
+    <% if (request.getAttribute("errorMessage") != null) { %>
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+        <%= request.getAttribute("errorMessage") %>
+    </div>
     <% } %>
 
-    <% String success = (String) session.getAttribute("successMessage"); %>
-    <% if(success != null) { %>
-    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded mb-4 text-center">
-        <%= success %>
-    </div>
-    <% session.removeAttribute("successMessage"); %>
-    <% } %>
+    <form action="${pageContext.request.contextPath}/auth/signup" method="post" class="space-y-6">
+        <div>
+            <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+            <div class="mt-1 relative rounded-md shadow-sm">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fas fa-user text-gray-400"></i>
+                </div>
+                <input type="text" id="username" name="username" required
+                       class="pl-10 focus:ring-sky-500 focus:border-sky-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border">
+            </div>
+        </div>
 
-    <form action="SignUpServlet" method="post" class="space-y-4">
         <div>
-            <label class="block text-gray-700 mb-1" for="email">Email</label>
-            <input
-                    type="email"
-                    name="email"
-                    id="email"
-                    required
-                    class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-rose-400"
-            />
+            <label for="fullName" class="block text-sm font-medium text-gray-700">Full Name</label>
+            <div class="mt-1 relative rounded-md shadow-sm">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fas fa-id-card text-gray-400"></i>
+                </div>
+                <input type="text" id="fullName" name="fullName" required
+                       class="pl-10 focus:ring-sky-500 focus:border-sky-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border">
+            </div>
         </div>
+
         <div>
-            <label class="block text-gray-700 mb-1" for="password">Password</label>
-            <input
-                    type="password"
-                    name="password"
-                    id="password"
-                    required
-                    class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-rose-400"
-            />
+            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+            <div class="mt-1 relative rounded-md shadow-sm">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fas fa-envelope text-gray-400"></i>
+                </div>
+                <input type="email" id="email" name="email" required
+                       class="pl-10 focus:ring-sky-500 focus:border-sky-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border">
+            </div>
         </div>
+
         <div>
-            <label class="block text-gray-700 mb-1" for="confirmPassword">Confirm Password</label>
-            <input
-                    type="password"
-                    name="confirmPassword"
-                    id="confirmPassword"
-                    required
-                    class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-rose-400"
-            />
+            <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
+            <select id="role" name="role" required
+                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-sky-500 focus:border-sky-500">
+                <option value="">Select a role</option>
+                <option value="admin">Administrator</option>
+                <option value="manager">Manager</option>
+                <option value="cashier">Cashier</option>
+            </select>
         </div>
-        <button
-                type="submit"
-                class="w-full bg-rose-500 hover:bg-rose-600 text-white font-semibold py-2 px-4 rounded transition"
-        >Sign Up</button>
+
+        <div>
+            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+            <div class="mt-1 relative rounded-md shadow-sm">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fas fa-lock text-gray-400"></i>
+                </div>
+                <input type="password" id="password" name="password" required
+                       class="pl-10 focus:ring-sky-500 focus:border-sky-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border">
+            </div>
+        </div>
+
+        <div>
+            <label for="confirmPassword" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+            <div class="mt-1 relative rounded-md shadow-sm">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fas fa-lock text-gray-400"></i>
+                </div>
+                <input type="password" id="confirmPassword" name="confirmPassword" required
+                       class="pl-10 focus:ring-sky-500 focus:border-sky-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border">
+            </div>
+        </div>
+
+        <div>
+            <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-sky-700 hover:bg-sky-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500">
+                Sign Up
+            </button>
+        </div>
     </form>
 
-    <p class="mt-4 text-center text-gray-600 text-sm">
-        Already have an account?
-        <a href="LoginServlet" class="text-rose-500 hover:underline">Log in</a>
-    </p>
+    <div class="mt-6 text-center">
+        <p class="text-sm text-gray-600">
+            Already have an account? <a href="${pageContext.request.contextPath}/index.jsp" class="font-medium text-sky-700 hover:text-sky-800">Sign In</a>
+        </p>
+    </div>
 </div>
 </body>
 </html>

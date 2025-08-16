@@ -1,115 +1,123 @@
 package com.example.demo.servlet;
 
+import com.example.demo.dao.DAOFactory;
 import com.example.demo.dao.CustomerDAO;
 import com.example.demo.model.Customer;
+import com.example.demo.util.ValidationUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
-@WebServlet("/customers/*")
+@WebServlet("/customers")
 public class CustomerServlet extends HttpServlet {
     private CustomerDAO customerDAO;
 
     @Override
-    public void init() throws ServletException {
-        super.init();
-        customerDAO = new CustomerDAO();
+    public void init() {
+        customerDAO = DAOFactory.getCustomerDAO();
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String pathInfo = request.getPathInfo();
-
-        try {
-            if (pathInfo == null || pathInfo.equals("/list")) {
-                listCustomers(request, response);
-            } else if (pathInfo.equals("/new")) {
-                showNewForm(request, response);
-            } else if (pathInfo.equals("/edit")) {
-                showEditForm(request, response);
-            } else if (pathInfo.equals("/view")) {
-                viewCustomer(request, response);
-            } else {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            }
-        } catch (SQLException e) {
-            throw new ServletException("Database error", e);
-        }
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String pathInfo = request.getPathInfo();
-
-        try {
-            if (pathInfo.equals("/add")) {
-                addCustomer(request, response);
-            } else if (pathInfo.equals("/update")) {
-                updateCustomer(request, response);
-            } else {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            }
-        } catch (SQLException e) {
-            throw new ServletException("Database error", e);
-        }
-    }
-
-    private void listCustomers(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, ServletException, IOException {
-        List<Customer> customers = customerDAO.getAllCustomers();
-        request.setAttribute("customers", customers);
-        request.getRequestDispatcher("/customer/list.jsp").forward(request, response);
-    }
-
-    private void showNewForm(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/customer/form.jsp").forward(request, response);
+        String action = request.getParameter("action");
+
+        try {
+            if (action == null) {
+                // List all customers
+                List<Customer> customers = customerDAO.getAllCustomers();
+                request.setAttribute("customers", customers);
+                request.getRequestDispatcher("/customers/list.jsp").forward(request, response);
+            } else if ("new".equals(action)) {
+                // Show new customer form
+                request.getRequestDispatcher("/customers/form.jsp").forward(request, response);
+            } else if ("edit".equals(action)) {
+                // Show edit customer form
+                String accountNumber = request.getParameter("accountNumber");
+                Customer customer = customerDAO.getCustomerByAccountNumber(accountNumber);
+                request.setAttribute("customer", customer);
+                request.getRequestDispatcher("/customers/form.jsp").forward(request, response);
+            } else if ("view".equals(action)) {
+                // View customer details
+                String accountNumber = request.getParameter("accountNumber");
+                Customer customer = customerDAO.getCustomerByAccountNumber(accountNumber);
+                request.setAttribute("customer", customer);
+                request.getRequestDispatcher("/customers/view.jsp").forward(request, response);
+            }
+        } catch (Exception e) {
+            throw new ServletException("Database error", e);
+        }
     }
 
-    private void showEditForm(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, ServletException, IOException {
-        String accountNo = request.getParameter("accountNo");
-        Customer existingCustomer = customerDAO.getCustomer(accountNo);
-        request.setAttribute("customer", existingCustomer);
-        request.getRequestDispatcher("/customer/form.jsp").forward(request, response);
-    }
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String action = request.getParameter("action");
 
-    private void viewCustomer(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, ServletException, IOException {
-        String accountNo = request.getParameter("accountNo");
-        Customer customer = customerDAO.getCustomer(accountNo);
-        request.setAttribute("customer", customer);
-        request.getRequestDispatcher("/customer/view.jsp").forward(request, response);
-    }
+        try {
+            if ("save".equals(action)) {
+                // Save or update customer
+                String accountNumber = request.getParameter("accountNumber");
+                String name = request.getParameter("name");
+                String address = request.getParameter("address");
+                String telephone = request.getParameter("telephone");
+                String unitsConsumedStr = request.getParameter("unitsConsumed");
 
-    private void addCustomer(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException {
-        String accountNo = request.getParameter("accountNo");
-        String name = request.getParameter("name");
-        String address = request.getParameter("address");
-        String phone = request.getParameter("phone");
-        int unitsConsumed = Integer.parseInt(request.getParameter("unitsConsumed"));
+                // Validate input
+                if (!ValidationUtil.isValidAccountNumber(accountNumber)) {
+                    request.setAttribute("errorMessage", "Invalid account number");
+                    request.getRequestDispatcher("/customers/form.jsp").forward(request, response);
+                    return;
+                }
 
-        Customer newCustomer = new Customer(accountNo, name, address, phone, unitsConsumed);
-        customerDAO.addCustomer(newCustomer);
-        response.sendRedirect(request.getContextPath() + "/customers/list");
-    }
+                if (!ValidationUtil.isValidPhone(telephone)) {
+                    request.setAttribute("errorMessage", "Invalid phone number");
+                    request.getRequestDispatcher("/customers/form.jsp").forward(request, response);
+                    return;
+                }
 
-    private void updateCustomer(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException {
-        String accountNo = request.getParameter("accountNo");
-        String name = request.getParameter("name");
-        String address = request.getParameter("address");
-        String phone = request.getParameter("phone");
-        int unitsConsumed = Integer.parseInt(request.getParameter("unitsConsumed"));
+                int unitsConsumed = 0;
+                try {
+                    unitsConsumed = Integer.parseInt(unitsConsumedStr);
+                } catch (NumberFormatException e) {
+                    request.setAttribute("errorMessage", "Units consumed must be a number");
+                    request.getRequestDispatcher("/customers/form.jsp").forward(request, response);
+                    return;
+                }
 
-        Customer customer = new Customer(accountNo, name, address, phone, unitsConsumed);
-        customerDAO.updateCustomer(customer);
-        response.sendRedirect(request.getContextPath() + "/customers/list");
+                Customer customer = new Customer();
+                customer.setAccountNumber(accountNumber);
+                customer.setName(name);
+                customer.setAddress(address);
+                customer.setTelephone(telephone);
+                customer.setUnitsConsumed(unitsConsumed);
+
+                // Check if it's a new customer or update
+                Customer existingCustomer = customerDAO.getCustomerByAccountNumber(accountNumber);
+                if (existingCustomer == null) {
+                    // New customer
+                    customer.setRegistrationDate(LocalDate.now());
+                    customerDAO.saveCustomer(customer);
+                } else {
+                    // Update existing customer
+                    customer.setRegistrationDate(existingCustomer.getRegistrationDate());
+                    customerDAO.updateCustomer(customer);
+                }
+
+                response.sendRedirect(request.getContextPath() + "/customers");
+            } else if ("delete".equals(action)) {
+                // Delete customer
+                String accountNumber = request.getParameter("accountNumber");
+                customerDAO.deleteCustomer(accountNumber);
+                response.sendRedirect(request.getContextPath() + "/customers");
+            }
+        } catch (Exception e) {
+            throw new ServletException("Database error", e);
+        }
     }
 }
