@@ -45,9 +45,6 @@
         </div>
     </form>
     <div class="mt-6 text-center">
-        <p class="text-sm text-gray-600">
-            Need help? <a href="${pageContext.request.contextPath}/help.jsp" class="font-medium text-sky-700 hover:text-sky-800">Visit Help Section</a>
-        </p>
         <p class="text-sm text-gray-600 mt-2">
             New staff member? <a href="${pageContext.request.contextPath}/auth/signup.jsp" class="font-medium text-sky-700 hover:text-sky-800">Create an account</a>
         </p>

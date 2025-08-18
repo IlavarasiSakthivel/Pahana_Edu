@@ -24,12 +24,14 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        System.out.println("GET /auth/login: contextPath=" + request.getContextPath() + ", requestURI=" + request.getRequestURI());
         response.sendRedirect(request.getContextPath() + "/index.jsp");
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        System.out.println("POST /auth/login: contextPath=" + request.getContextPath() + ", requestURI=" + request.getRequestURI());
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
@@ -40,29 +42,7 @@ public class LoginServlet extends HttpServlet {
 
             User user = userDAO.findByUsername(username);
 
-            // Debug: print user object details
-            if (user != null) {
-                System.out.println("User found: username=" + user.getUsername() +
-                                   ", hashedPassword=" + user.getPassword() +
-                                   ", role=" + user.getRole() +
-                                   ", email=" + user.getEmail() +
-                                   ", fullName=" + user.getFullName());
-            } else {
-                System.out.println("No user found for username: " + username);
-            }
-
-            if (user == null) {
-                request.setAttribute("errorMessage", "Invalid username or password");
-                request.getRequestDispatcher("/index.jsp").forward(request, response);
-                return;
-            }
-
-            // Debug: print user object to log
-            System.out.println("User object: " + user);
-
-
-            String hashedPassword = user.getPassword();
-            if (hashedPassword == null) {
+            if (user == null || user.getPassword() == null) {
                 request.setAttribute("errorMessage", "Invalid username or password");
                 request.getRequestDispatcher("/index.jsp").forward(request, response);
                 return;
@@ -70,7 +50,7 @@ public class LoginServlet extends HttpServlet {
 
             boolean passwordOk = false;
             try {
-                passwordOk = PasswordUtil.checkPassword(password, hashedPassword);
+                passwordOk = PasswordUtil.checkPassword(password, user.getPassword());
             } catch (Exception ex) {
                 ex.printStackTrace();
                 request.setAttribute("errorMessage", "Password check failed. Please contact admin.");
@@ -81,13 +61,14 @@ public class LoginServlet extends HttpServlet {
             if (passwordOk) {
                 HttpSession session = request.getSession();
                 session.setAttribute("user", user);
+                // Ensure dashboard exists and is mapped correctly
                 response.sendRedirect(request.getContextPath() + "/dashboard");
             } else {
                 request.setAttribute("errorMessage", "Invalid username or password");
                 request.getRequestDispatcher("/index.jsp").forward(request, response);
             }
         } catch (Exception e) {
-            e.printStackTrace(); // This will print the real error to your server log
+            e.printStackTrace();
             request.setAttribute("errorMessage", "An internal error occurred: " + e.getMessage());
             request.getRequestDispatcher("/index.jsp").forward(request, response);
         }
