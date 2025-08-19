@@ -1,38 +1,29 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
+<%@ page import="com.example.demo.model.User" %>
+<%
+    User loggedUser = (User) session.getAttribute("loggedUser");
+    if (loggedUser == null) { response.sendRedirect("index.jsp"); return; }
+%>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Admin Dashboard</title>
-    <style>
-        body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; }
-        .dashboard { max-width: 700px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        h1 { color: #333; }
-        .section { margin-bottom: 20px; }
-        .btn { display: inline-block; padding: 10px 20px; background: #007bff; color: #fff; border: none; border-radius: 4px; text-decoration: none; margin-right: 10px; }
-        ul { padding-left: 20px; }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <div class="dashboard">
-        <h1>Admin Dashboard</h1>
-        <div class="section">
-            <p>Welcome, Admin!</p>
-        </div>
-        <div class="section">
-            <h2>Quick Actions</h2>
-            <a class="btn" href="#">Manage Users</a>
-            <a class="btn" href="#">View Reports</a>
-            <a class="btn" href="#">Settings</a>
-        </div>
-        <div class="section">
-            <h2>Statistics</h2>
-            <ul>
-                <li>Total Users: 120</li>
-                <li>Active Sessions: 5</li>
-                <li>Pending Requests: 3</li>
-            </ul>
-        </div>
-    </div>
+<body class="bg-sky-100">
+<div class="p-6 bg-sky-700 text-white">
+    <h1 class="text-2xl font-bold">Welcome, <%= loggedUser.getUsername() %></h1>
+    <p class="mt-1">Role: <%= loggedUser.getRole() %></p>
+</div>
+
+<div class="p-6">
+    <% if ("ADMIN".equals(loggedUser.getRole())) { %>
+    <a href="users.jsp" class="block bg-sky-800 text-white p-4 rounded mt-2">Manage Users</a>
+    <% } %>
+    <a href="customers.jsp" class="block bg-sky-800 text-white p-4 rounded mt-2">Manage Customers</a>
+    <a href="items.jsp" class="block bg-sky-800 text-white p-4 rounded mt-2">Manage Items</a>
+    <a href="bills.jsp" class="block bg-sky-800 text-white p-4 rounded mt-2">Billing</a>
+    <a href="help.jsp" class="block bg-sky-800 text-white p-4 rounded mt-2">Help</a>
+    <a href="logout.jsp" class="block bg-red-600 text-white p-4 rounded mt-2">Logout</a>
+</div>
 </body>
 </html>
-
