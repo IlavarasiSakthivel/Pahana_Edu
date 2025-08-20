@@ -38,28 +38,26 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public void save(User user) throws Exception {
-        String sql = "INSERT INTO users (username, password, role, email, full_name) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (username, password, role, email) VALUES (?, ?, ?, ?)";
         try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, user.getUsername());
             stmt.setString(2, user.getPassword());
             stmt.setString(3, user.getRole());
             stmt.setString(4, user.getEmail());
-            stmt.setString(5, user.getFullName());
             stmt.executeUpdate();
         }
     }
 
     @Override
     public void update(User user) throws Exception {
-        String sql = "UPDATE users SET username = ?, password = ?, role = ?, email = ?, full_name = ? WHERE id = ?";
+        String sql = "UPDATE users SET username = ?, password = ?, role = ?, email = ? WHERE id = ?";
         try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, user.getUsername());
             stmt.setString(2, user.getPassword());
             stmt.setString(3, user.getRole());
             stmt.setString(4, user.getEmail());
-            stmt.setString(5, user.getFullName());
             stmt.setInt(6, user.getId());
             stmt.executeUpdate();
         }
@@ -91,12 +89,11 @@ public class UserDAOImpl implements UserDAO {
 
     private User extractUserFromResultSet(ResultSet rs) throws SQLException {
         User user = new User();
-        user.setId(rs.getInt("id")); // <-- FIXED COLUMN NAME
+        user.setId(rs.getInt("id"));
         user.setUsername(rs.getString("username"));
         user.setPassword(rs.getString("password"));
         user.setRole(rs.getString("role"));
         user.setEmail(rs.getString("email"));
-        user.setFullName(rs.getString("full_name"));
         return user;
     }
 }
