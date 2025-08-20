@@ -1,37 +1,37 @@
 package com.example.demo.servlet;
 
-import com.example.demo.entity.User;
-import com.example.demo.service.UserService;
-import jakarta.servlet.*;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.*;
+import com.example.demo.dao.UserDAO;
+import com.example.demo.model.User;
+import com.example.demo.util.DBConnection;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.sql.Connection;
 
-@WebServlet("/auth/login")
 public class AuthServlet extends HttpServlet {
-    private final UserService service = new UserService();
-
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
 
-        String email = req.getParameter("email");
-        String password = req.getParameter("password");
+        try (Connection conn = DBConnection.getConnection()) {
+            UserDAO userDAO = new UserDAO(conn);
+            User user = userDAO.authenticate(username, password);
 
-        User user = service.login(email, password);
-
-        if (user != null) {
-            req.getSession().setAttribute("loggedUser", user);
-            // example: check role (you need a role column in your entity & DB)
-            if ("ADMIN".equalsIgnoreCase(user.getRole())) {
-                resp.sendRedirect(req.getContextPath() + "/dashboards/admin-dashboard.jsp");
+            if (user != null) {
+                HttpSession session = request.getSession();
+                session.setAttribute("user", user);
+                response.sendRedirect("dashboard.jsp");
             } else {
-                resp.sendRedirect(req.getContextPath() + "/dashboards/staff-dashboard.jsp");
+                response.sendRedirect("login.jsp?error=1");
             }
-        } else {
-            req.setAttribute("errorMessage", "Invalid username or password.");
-            req.getRequestDispatcher("/index.jsp").forward(req, resp);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("login.jsp?error=2");
         }
     }
 }

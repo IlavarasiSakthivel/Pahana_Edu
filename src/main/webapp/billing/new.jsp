@@ -35,6 +35,7 @@
     <input type="hidden" name="action" value="create">
     <div class="bg-white p-4 rounded shadow max-w-3xl">
         <label class="block mb-3">
+            
             <span class="text-gray-700">Customer</span>
             <select name="customerId" required class="border p-2 rounded w-full mt-1">
                 <option value="">-- Select --</option>

@@ -10,7 +10,21 @@ import java.io.IOException;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
-    private UserService userService = new UserService();
+    private UserService userService;
+
+    @Override
+    public void init() throws ServletException {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            java.sql.Connection connection = java.sql.DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/pahana_edu?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC",
+                    "root",
+                    "G7#v9Lp@3XqZ!tR8"            );
+            userService = new UserService(connection);
+        } catch (Exception e) {
+            throw new ServletException(e);
+        }
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -18,15 +32,16 @@ public class LoginServlet extends HttpServlet {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        com.example.demo.entity.User entityUser = userService.login(email, password);
+        com.example.demo.model.User entityUser = userService.login(email, password);
 
         com.example.demo.model.User user = null;
         if (entityUser != null) {
-            user = new com.example.demo.model.User(
-                entityUser.getId(),
-                entityUser.getEmail(),
-                entityUser.getRole()
-            );
+            user = new com.example.demo.model.User();
+            user.setId(entityUser.getId());
+            user.setEmail(entityUser.getEmail());
+            user.setUsername(entityUser.getUsername());
+            user.setPassword(entityUser.getPassword());
+            user.setRole(entityUser.getRole());
         }
 
         if (user != null) {

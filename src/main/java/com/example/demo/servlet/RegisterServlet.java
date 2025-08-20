@@ -10,7 +10,23 @@ import java.io.IOException;
 
 @WebServlet("/register")
 public class RegisterServlet extends HttpServlet {
-    private UserService userService = new UserService();
+    private UserService userService;
+
+    @Override
+    public void init() throws ServletException {
+        try {
+            // Example: replace with proper connection acquisition for your environment
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            java.sql.Connection connection = java.sql.DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/pahana_edu?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC",
+                    "root",
+                    "G7#v9Lp@3XqZ!tR8"
+            );
+            userService = new UserService(connection);
+        } catch (Exception e) {
+            throw new ServletException(e);
+        }
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
