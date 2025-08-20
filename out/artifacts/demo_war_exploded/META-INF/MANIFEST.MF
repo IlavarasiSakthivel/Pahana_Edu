@@ -2,4 +2,15 @@ Manifest-Version: 1.0
 Created-By: IntelliJ IDEA
 Built-By: ilavarasi
 Build-Jdk: JetBrains Runtime 21.0.7
+Main-Class: com.example.MainClass
+Class-Path: jakarta.persistence-api-3.1.0.jar hibernate-core-6.5.2.Final
+ .jar jakarta.transaction-api-2.0.1.jar jboss-logging-3.5.0.Final.jar hi
+ bernate-commons-annotations-6.0.6.Final.jar jandex-3.1.2.jar classmate-
+ 1.5.1.jar byte-buddy-1.14.15.jar jakarta.inject-api-2.0.1.jar antlr4-ru
+ ntime-4.13.0.jar mysql-connector-j-8.0.33.jar protobuf-java-3.21.9.jar 
+ jakarta.servlet-api-6.0.0.jar jakarta.xml.bind-api-4.0.0.jar jakarta.ac
+ tivation-api-2.1.0.jar jaxb-runtime-4.0.0.jar jaxb-core-4.0.0.jar angus
+ -activation-1.0.0.jar txw2-4.0.0.jar istack-commons-runtime-4.1.1.jar j
+ akarta.servlet.jsp.jstl-api-2.0.0.jar jakarta.el-api-4.0.0.jar jakarta.
+ servlet.jsp.jstl-2.0.0.jar jbcrypt-0.4.jar
 

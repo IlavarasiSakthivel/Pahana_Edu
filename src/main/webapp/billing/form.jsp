@@ -9,6 +9,7 @@
 </head>
 <body class="bg-gray-100">
 <div class="flex min-h-screen">
+
     <!-- Sidebar -->
     <div class="bg-sky-800 text-white w-64">
         <div class="p-4 text-2xl font-bold">Pahana Edu</div>

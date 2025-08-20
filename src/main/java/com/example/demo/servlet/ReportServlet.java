@@ -1,40 +1,23 @@
 package com.example.demo.servlet;
 
 import com.example.demo.dao.BillDAO;
-import com.example.demo.dao.impl.BillDAOImpl;
-import com.example.demo.model.Bill;
-import jakarta.servlet.ServletException;
+import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.*;
 
 import java.io.IOException;
-import java.sql.Date;
-import java.util.List;
+import java.time.LocalDate;
 
-@WebServlet("/report")
+@WebServlet("/reports/sales")
 public class ReportServlet extends HttpServlet {
-    private BillDAO billDAO = new BillDAOImpl();
+    private final BillDAO billDAO = new BillDAO();
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        String startDateStr = request.getParameter("startDate");
-        String endDateStr = request.getParameter("endDate");
-
-        List<Bill> bills = null;
-        if (startDateStr != null && endDateStr != null) {
-            try {
-                Date startDate = Date.valueOf(startDateStr);
-                Date endDate = Date.valueOf(endDateStr);
-                bills = billDAO.getBillsByDateRange(startDate, endDate);
-            } catch (Exception e) {
-                request.setAttribute("error", "Invalid date format or database error.");
-            }
-        }
-
-        request.setAttribute("bills", bills);
-        request.getRequestDispatcher("/report.jsp").forward(request, response);
+        String date = req.getParameter("date");
+        if (date == null || date.isBlank()) date = LocalDate.now().toString();
+        req.setAttribute("date", date);
+        req.setAttribute("total", billDAO.totalSalesForDate(date));
+        req.getRequestDispatcher("/reports/sales.jsp").forward(req, resp);
     }
 }
