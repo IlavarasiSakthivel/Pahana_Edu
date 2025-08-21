@@ -23,6 +23,7 @@ public class BillServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+
         String action = req.getParameter("action");
         if (action == null) action = "list";
 
@@ -37,13 +38,12 @@ public class BillServlet extends HttpServlet {
                 int billId = Integer.parseInt(req.getParameter("id"));
                 Bill bill = billingService.getBill(billId);
                 req.setAttribute("bill", bill);
-                req.getRequestDispatcher("/bills/receipt.jsp").forward(req, resp);
+                req.getRequestDispatcher("/billing/reciept.jsp").forward(req, resp);
                 break;
 
             default:
                 List<Bill> bills = billingService.recent(50);
-                if (bills == null) bills = new ArrayList<>();
-                req.setAttribute("bills", bills);
+                req.setAttribute("bills", bills != null ? bills : new ArrayList<>());
                 req.getRequestDispatcher("/bills/list.jsp").forward(req, resp);
         }
     }
@@ -51,6 +51,7 @@ public class BillServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+
         String action = req.getParameter("action");
         if ("create".equals(action)) {
             try {
@@ -64,6 +65,7 @@ public class BillServlet extends HttpServlet {
                     int qty = Integer.parseInt(qtys[i]);
                     Item it = itemService.get(id);
                     if (it == null || qty <= 0) continue;
+
                     BillItem bi = new BillItem();
                     bi.setItemId(id);
                     bi.setQty(qty);

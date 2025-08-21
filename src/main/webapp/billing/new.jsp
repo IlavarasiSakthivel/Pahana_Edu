@@ -1,74 +1,79 @@
-<%@ page import="java.util.List"%>
-<%@ page import="com.example.demo.model.Customer" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.example.demo.model.Item" %>
+<%@ page import="com.example.demo.model.Customer" %>
+<%@ page import="java.util.List" %>
 
 <%
     List<Customer> customers = (List<Customer>) request.getAttribute("customers");
+    if (customers == null) customers = java.util.Collections.emptyList();
+
     List<Item> items = (List<Item>) request.getAttribute("items");
+    if (items == null) items = java.util.Collections.emptyList();
 %>
+
 <!DOCTYPE html>
 <html>
 <head>
     <title>New Bill</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        function addRow() {
-            const selectHtml = document.getElementById('itemSelectTemplate').innerHTML;
-            const tbody = document.getElementById('rows');
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-        <td class="border p-2">${selectHtml}</td>
-        <td class="border p-2"><input name="qty" type="number" min="1" value="1" class="border p-1 w-20"></td>
-        <td class="border p-2"><button type="button" onclick="this.closest('tr').remove()" class="text-red-700">Remove</button></td>
-      `;
-            tbody.appendChild(tr);
-        }
-    </script>
 </head>
 <body class="bg-sky-50">
-<div class="p-6 bg-sky-700 text-white flex justify-between">
-    <h1 class="text-xl font-bold">Create Bill</h1>
-    <a href="<%=request.getContextPath()%>/bills" class="bg-sky-800 px-3 py-1 rounded">Back</a>
+
+<div class="p-6 flex justify-between bg-sky-700 text-white items-center">
+    <h1 class="text-xl font-bold">Create New Bill</h1>
+    <a href="${pageContext.request.contextPath}/bills" class="bg-gray-600 px-3 py-1 rounded hover:bg-gray-700">Back to Bills</a>
 </div>
 
-<form action="<%=request.getContextPath()%>/bills" method="post" class="p-6">
-    <input type="hidden" name="action" value="create">
-    <div class="bg-white p-4 rounded shadow max-w-3xl">
-        <label class="block mb-3">
-            
-            <span class="text-gray-700">Customer</span>
-            <select name="customerId" required class="border p-2 rounded w-full mt-1">
-                <option value="">-- Select --</option>
-                <% for (Customer c : customers) { %>
-                <option value="<%= c.getId() %>"><%= c.getAccountNumber() %> - <%= c.getName() %></option>
-                <% } %>
-            </select>
-        </label>
+<div class="p-6 bg-white shadow rounded">
+    <form action="${pageContext.request.contextPath}/bills" method="post">
+        <input type="hidden" name="action" value="create">
 
-        <div class="flex justify-between items-center mb-2">
-            <h3 class="text-sky-800 font-semibold">Items</h3>
-            <button type="button" onclick="addRow()" class="bg-green-600 text-white px-3 py-1 rounded">Add Item</button>
+        <!-- Customer Selection -->
+        <div class="mb-4">
+            <label class="block font-semibold mb-1" for="customerId">Select Customer:</label>
+            <select name="customerId" id="customerId" class="w-full border rounded px-2 py-1">
+                <c:forEach var="c" items="${customers}">
+                    <option value="${c.id}">${c.name} (ID: ${c.id})</option>
+                </c:forEach>
+            </select>
         </div>
 
-        <table class="min-w-full bg-white border">
-            <thead class="bg-sky-100">
-            <tr><th class="p-2 border">Item</th><th class="p-2 border">Qty</th><th class="p-2 border">Action</th></tr>
-            </thead>
-            <tbody id="rows"></tbody>
-        </table>
-
-        <template id="itemSelectTemplate">
-            <select name="itemId" class="border p-1 rounded">
-                <% for (Item it : items) { %>
-                <option value="<%= it.getId() %>"><%= it.getName() %> (Rs.<%= it.getPrice() %>, Stock:<%= it.getStock() %>)</option>
-                <% } %>
-            </select>
-        </template>
-
-        <div class="mt-4">
-            <button class="bg-sky-700 text-white px-4 py-2 rounded">Create Bill</button>
+        <!-- Items Table -->
+        <div class="mb-4">
+            <label class="block font-semibold mb-1">Select Items:</label>
+            <table class="min-w-full border">
+                <thead class="bg-sky-100">
+                <tr>
+                    <th class="p-2 border">Item</th>
+                    <th class="p-2 border">Price</th>
+                    <th class="p-2 border">Quantity</th>
+                </tr>
+                </thead>
+                <tbody>
+                <c:forEach var="item" items="${items}" varStatus="status">
+                    <tr>
+                        <td class="p-2 border">${item.name}</td>
+                        <td class="p-2 border">Rs. ${item.price}</td>
+                        <td class="p-2 border">
+                            <input type="number" min="0" value="0" class="w-20 border rounded px-1 py-0.5"
+                                   name="qty" id="qty${status.index}">
+                            <input type="hidden" name="itemId" value="${item.id}">
+                        </td>
+                    </tr>
+                </c:forEach>
+                </tbody>
+            </table>
         </div>
-    </div>
-</form>
+
+        <!-- Submit Button -->
+        <div>
+            <button type="submit" class="bg-green-600 px-4 py-2 text-white rounded hover:bg-green-700">
+                Create Bill
+            </button>
+        </div>
+    </form>
+</div>
+
 </body>
 </html>

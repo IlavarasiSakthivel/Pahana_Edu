@@ -81,7 +81,7 @@
                     <div id="billingMenu" class="hidden ml-6 mt-1 space-y-1">
                         <a href="<%= request.getContextPath() %>/billing/list.jsp" class="block px-3 py-2 rounded hover:bg-gray-100">Bill List</a>
                         <a href="<%= request.getContextPath() %>/billing/new.jsp" class="block px-3 py-2 rounded hover:bg-gray-100">New Bill</a>
-                        <a href="<%= request.getContextPath() %>/billing/receipt.jsp" class="block px-3 py-2 rounded hover:bg-gray-100">Receipts</a>
+                        <a href="<%= request.getContextPath() %>/billing/reciept.jsp" class="block px-3 py-2 rounded hover:bg-gray-100">Receipts</a>
                     </div>
                 </div>
 
