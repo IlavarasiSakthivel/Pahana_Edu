@@ -39,7 +39,8 @@
         <h1 class="text-xl font-bold">Pahana Edu - Receipt</h1>
         <p>Bill ID: ${bill.id} | Date: ${bill.createdAt}</p>
     </div>
-    <button onclick="window.print()" class="bg-sky-800 px-3 py-1 rounded hover:bg-sky-900">Print</button>
+    <div class="flex items-end">
+    <button onclick="window.print()" class="bg-sky-800 px-4 py-2 rounded hover:bg-sky-900 mr-2">Print</button>
     <%
         // Get user role from session (assumes it's set as "role" or use loggedUser)
         String role = (String) session.getAttribute("role");
@@ -55,6 +56,7 @@
         }
     %>
     <a href="<%=request.getContextPath()%>/<%=dashboardUrl%>" class="bg-sky-800 px-4 py-2 rounded shadow hover:bg-sky-900 transition">Dashboard</a>
+</div>
 </div>
 
 <div class="p-6 print-container">
