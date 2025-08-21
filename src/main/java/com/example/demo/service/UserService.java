@@ -1,14 +1,46 @@
 package com.example.demo.service;
 
 import com.example.demo.dao.UserDAO;
-import com.example.demo.entity.User;
+import com.example.demo.model.User;
+
 import java.sql.Connection;
+import java.util.List;
 
 public class UserService {
     private final UserDAO userDAO;
 
     public UserService(Connection connection) {
-        this.userDAO = new UserDAO(connection);
+        this.userDAO = new UserDAO(connection) {
+            @Override
+            public User findByUsername(String username) throws Exception {
+                return null;
+            }
+
+            @Override
+            public User findById(int id) throws Exception {
+                return null;
+            }
+
+            @Override
+            public void save(User user) throws Exception {
+
+            }
+
+            @Override
+            public void update(User user) throws Exception {
+
+            }
+
+            @Override
+            public void delete(int id) throws Exception {
+
+            }
+
+            @Override
+            public List<User> getAllUsers() throws Exception {
+                return List.of();
+            }
+        };
     }
 
     // Return the User object, not boolean

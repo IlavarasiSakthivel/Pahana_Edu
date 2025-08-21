@@ -5,10 +5,11 @@ import com.example.demo.model.Bill;
 import com.example.demo.model.BillItem;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.sql.Date;
 import java.util.List;
 
 public class BillingService {
+
     private final BillDAO billDAO = new BillDAO();
     private final ItemService itemService = new ItemService();
 
@@ -19,7 +20,9 @@ public class BillingService {
             it.setLineTotal(line);
             total = total.add(line);
         }
+
         int billId = billDAO.createBill(customerId, total);
+
         for (BillItem it : items) {
             billDAO.addBillItem(billId, it.getItemId(), it.getQty(), it.getUnitPrice(), it.getLineTotal());
             itemService.reduceStock(it.getItemId(), it.getQty());
@@ -27,7 +30,19 @@ public class BillingService {
         return billId;
     }
 
-    public Bill getBill(int billId){ return billDAO.findByIdWithItems(billId); }
+    public Bill getBill(int billId) {
+        return billDAO.findByIdWithItems(billId);
+    }
 
-    public List<Bill> recent(int limit){ return billDAO.listRecent(limit); }
+    public List<Bill> recent(int limit) {
+        return billDAO.listRecent(limit);
+    }
+
+    public BigDecimal totalSalesForDate(String date) {
+        return billDAO.totalSalesForDate(date);
+    }
+
+    public List<Bill> getBillsByDateRange(Date startDate, Date endDate) {
+        return billDAO.getBillsByDateRange(startDate, endDate);
+    }
 }

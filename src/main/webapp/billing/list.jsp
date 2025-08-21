@@ -3,6 +3,7 @@
 
 <%
     List<Bill> bills = (List<Bill>) request.getAttribute("bills");
+    if (bills == null) bills = java.util.Collections.emptyList();
 %>
 <!DOCTYPE html>
 <html>
@@ -19,7 +20,13 @@
 <div class="p-6">
     <table class="min-w-full bg-white border">
         <thead class="bg-sky-100">
-        <tr><th class="p-2 border">ID</th><th class="p-2 border">Customer ID</th><th class="p-2 border">Total</th><th class="p-2 border">Date</th><th class="p-2 border">Actions</th></tr>
+        <tr>
+            <th class="p-2 border">ID</th>
+            <th class="p-2 border">Customer ID</th>
+            <th class="p-2 border">Total</th>
+            <th class="p-2 border">Date</th>
+            <th class="p-2 border">Actions</th>
+        </tr>
         </thead>
         <tbody>
         <% for (Bill b : bills) { %>
