@@ -9,37 +9,6 @@
 </head>
 <body class="bg-gray-100">
 <div class="flex min-h-screen">
-    <!-- Sidebar -->
-    <div class="bg-sky-800 text-white w-64">
-        <div class="p-4 text-2xl font-bold">Pahana Edu</div>
-        <nav class="mt-6">
-            <a href="${pageContext.request.contextPath}/dashboard" class="block py-2.5 px-4 rounded hover:bg-sky-700">
-                <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
-            </a>
-            <a href="${pageContext.request.contextPath}/customers" class="block py-2.5 px-4 rounded hover:bg-sky-700">
-                <i class="fas fa-users mr-2"></i>Customers
-            </a>
-            <a href="${pageContext.request.contextPath}/items" class="block py-2.5 px-4 rounded hover:bg-sky-700">
-                <i class="fas fa-box mr-2"></i>Items
-            </a>
-            <a href="${pageContext.request.contextPath}/billing" class="block py-2.5 px-4 rounded hover:bg-sky-700">
-                <i class="fas fa-file-invoice-dollar mr-2"></i>Billing
-            </a>
-            <a href="${pageContext.request.contextPath}/reports?type=sales" class="block py-2.5 px-4 rounded hover:bg-sky-700">
-                <i class="fas fa-chart-bar mr-2"></i>Sales Report
-            </a>
-            <a href="${pageContext.request.contextPath}/reports?type=stock" class="block py-2.5 px-4 rounded bg-sky-700">
-                <i class="fas fa-warehouse mr-2"></i>Stock Report
-            </a>
-            <a href="${pageContext.request.contextPath}/help.jsp" class="block py-2.5 px-4 rounded hover:bg-sky-700">
-                <i class="fas fa-question-circle mr-2"></i>Help
-            </a>
-            <a href="${pageContext.request.contextPath}/auth/logout" class="block py-2.5 px-4 rounded hover:bg-sky-700">
-                <i class="fas fa-sign-out-alt mr-2"></i>Logout
-            </a>
-        </nav>
-    </div>
-
     <!-- Main Content -->
     <div class="flex-1 p-8">
         <div class="flex justify-between items-center mb-6">

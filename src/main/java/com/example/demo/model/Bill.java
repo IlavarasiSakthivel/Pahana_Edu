@@ -6,7 +6,9 @@ import java.util.List;
 
 public class Bill {
     private int id;
+    private String customerAccountNumber;
     private int customerId;
+    private String customerName;
     private BigDecimal total;
     private LocalDateTime createdAt;
     private List<BillItem> items;
@@ -14,8 +16,26 @@ public class Bill {
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
-    public int getCustomerId() { return customerId; }
-    public void setCustomerId(int customerId) { this.customerId = customerId; }
+    public String getCustomerAccountNumber() {
+        return customerAccountNumber;
+    }
+    public void setCustomerAccountNumber(String customerAccountNumber) {
+        this.customerAccountNumber = customerAccountNumber;
+    }
+
+    public int getCustomerId() {
+        return customerId;
+    }
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
 
     public BigDecimal getTotal() { return total; }
     public void setTotal(BigDecimal total) { this.total = total; }

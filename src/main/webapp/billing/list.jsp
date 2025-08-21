@@ -3,7 +3,6 @@
 
 <%
     List<Bill> bills = (List<Bill>) request.getAttribute("bills");
-    if (bills == null) bills = java.util.Collections.emptyList();
 %>
 <!DOCTYPE html>
 <html>
@@ -23,21 +22,31 @@
         <tr>
             <th class="p-2 border">ID</th>
             <th class="p-2 border">Customer ID</th>
-            <th class="p-2 border">Total</th>
-            <th class="p-2 border">Date</th>
+            <th class="p-2 border">Account No</th>
+            <th class="p-2 border">Customer Name</th>
+            <th class="p-2 border">Total Amount</th>
+            <th class="p-2 border">Bill Date</th>
             <th class="p-2 border">Actions</th>
         </tr>
         </thead>
         <tbody>
-        <% for (Bill b : bills) { %>
+        <% if (bills != null && !bills.isEmpty()) {
+            for (Bill b : bills) { %>
         <tr>
             <td class="p-2 border"><%= b.getId() %></td>
             <td class="p-2 border"><%= b.getCustomerId() %></td>
+            <td class="p-2 border"><%= b.getCustomerAccountNumber() %></td>
+            <td class="p-2 border"><%= b.getCustomerName() %></td>
             <td class="p-2 border">Rs. <%= b.getTotal() %></td>
             <td class="p-2 border"><%= b.getCreatedAt() %></td>
             <td class="p-2 border">
                 <a class="text-sky-700" href="<%=request.getContextPath()%>/bills?action=receipt&id=<%=b.getId()%>">Receipt</a>
             </td>
+        </tr>
+        <%   }
+        } else { %>
+        <tr>
+            <td class="p-2 border text-center" colspan="7">No bills found.</td>
         </tr>
         <% } %>
         </tbody>

@@ -13,7 +13,7 @@ public class BillingService {
     private final BillDAO billDAO = new BillDAO();
     private final ItemService itemService = new ItemService();
 
-    public int createBill(int customerId, List<BillItem> items) throws Exception {
+    public int createBill(String customerAccountNumber, List<BillItem> items) throws Exception {
         BigDecimal total = BigDecimal.ZERO;
         for (BillItem it : items) {
             BigDecimal line = it.getUnitPrice().multiply(BigDecimal.valueOf(it.getQty()));
@@ -21,7 +21,7 @@ public class BillingService {
             total = total.add(line);
         }
 
-        int billId = billDAO.createBill(customerId, total);
+        int billId = billDAO.createBill(customerAccountNumber, total);
 
         for (BillItem it : items) {
             billDAO.addBillItem(billId, it.getItemId(), it.getQty(), it.getUnitPrice(), it.getLineTotal());
