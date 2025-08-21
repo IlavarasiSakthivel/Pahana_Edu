@@ -33,7 +33,8 @@
         </tr>
         </thead>
         <tbody>
-        <% for (Item it : items) { %>
+        <% if (items != null) {
+            for (Item it : items) { %>
         <tr>
             <td class="p-2 border"><%= it.getName() %></td>
             <td class="p-2 border">Rs. <%= it.getPrice() %></td>
@@ -47,6 +48,9 @@
                 </form>
             </td>
         </tr>
+        <%   }
+           } else { %>
+        <tr><td colspan="4" class="p-2 border text-center text-gray-500">No items found.</td></tr>
         <% } %>
         </tbody>
     </table>

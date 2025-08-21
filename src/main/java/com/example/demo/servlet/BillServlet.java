@@ -2,6 +2,7 @@ package com.example.demo.servlet;
 
 import com.example.demo.model.Bill;
 import com.example.demo.model.BillItem;
+import com.example.demo.model.Customer;
 import com.example.demo.model.Item;
 import com.example.demo.service.BillingService;
 import com.example.demo.service.CustomerService;
@@ -31,9 +32,55 @@ public class BillServlet extends HttpServlet {
 
         switch (action) {
             case "new":
-                req.setAttribute("customers", customerService.list(null));
-                req.setAttribute("items", itemService.list(null));
-                req.getRequestDispatcher("/bills/new.jsp").forward(req, resp);
+                System.out.println("DEBUG: Entered 'new' action in BillServlet.");
+
+                List<Customer> customers = new ArrayList<>();
+                List<Item> items = new ArrayList<>();
+
+                // Fetch customers directly from DB
+                String customerSql = "SELECT id, account_number, name FROM customers";
+                try (Connection conn = DBConnection.getConnection();
+                     Statement stmt = conn.createStatement();
+                     ResultSet rs = stmt.executeQuery(customerSql)) {
+                    System.out.println("DEBUG: Executed customer SQL: " + customerSql);
+                    while (rs.next()) {
+                        Customer c = new Customer();
+                        c.setId(rs.getInt("id"));
+                        c.setAccountNumber(rs.getString("account_number"));
+                        c.setName(rs.getString("name"));
+                        customers.add(c);
+                        System.out.println("DEBUG: Customer: accountNumber=" + c.getAccountNumber() + ", name=" + c.getName());
+                    }
+                } catch (SQLException e) {
+                    System.out.println("ERROR: Exception fetching customers: " + e.getMessage());
+                    e.printStackTrace();
+                }
+
+                // Fetch items directly from DB
+                String itemSql = "SELECT id, name, price FROM items";
+                try (Connection conn = DBConnection.getConnection();
+                     Statement stmt = conn.createStatement();
+                     ResultSet rs = stmt.executeQuery(itemSql)) {
+                    System.out.println("DEBUG: Executed item SQL: " + itemSql);
+                    while (rs.next()) {
+                        Item i = new Item();
+                        i.setId(rs.getInt("id"));
+                        i.setName(rs.getString("name"));
+                        i.setPrice(rs.getBigDecimal("price"));
+                        items.add(i);
+                        System.out.println("DEBUG: Item: id=" + i.getId() + ", name=" + i.getName());
+                    }
+                } catch (SQLException e) {
+                    System.out.println("ERROR: Exception fetching items: " + e.getMessage());
+                    e.printStackTrace();
+                }
+
+                System.out.println("DEBUG: customers.size() = " + customers.size());
+                System.out.println("DEBUG: items.size() = " + items.size());
+
+                req.setAttribute("customers", customers);
+                req.setAttribute("items", items);
+                req.getRequestDispatcher("/billing/new.jsp").forward(req, resp);
                 break;
 
             case "receipt":

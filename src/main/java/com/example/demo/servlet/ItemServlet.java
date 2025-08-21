@@ -24,12 +24,12 @@ public class ItemServlet extends HttpServlet {
                     int id = Integer.parseInt(req.getParameter("id"));
                     req.setAttribute("item", service.get(id));
                 }
-                req.getRequestDispatcher("/items/form.jsp").forward(req, resp);
+                req.getRequestDispatcher("/items/itemForm.jsp").forward(req, resp);
                 break;
             default:
                 String q = req.getParameter("q");
                 req.setAttribute("items", service.list(q));
-                req.getRequestDispatcher("/items/list.jsp").forward(req, resp);
+                req.getRequestDispatcher("/items/itemList.jsp").forward(req, resp);
         }
     }
 

@@ -24,7 +24,7 @@ public class CustomerServlet extends HttpServlet {
                     int id = Integer.parseInt(req.getParameter("id"));
                     req.setAttribute("customer", service.get(id));
                 }
-                req.getRequestDispatcher("/customers/form.jsp").forward(req, resp);
+                req.getRequestDispatcher("/customer/cForm.jsp").forward(req, resp);
                 break;
             case "view":
                 int id = Integer.parseInt(req.getParameter("id"));
@@ -34,7 +34,7 @@ public class CustomerServlet extends HttpServlet {
             default:
                 String q = req.getParameter("q");
                 req.setAttribute("customers", service.list(q));
-                req.getRequestDispatcher("/customers/list.jsp").forward(req, resp);
+                req.getRequestDispatcher("/customer/cList.jsp").forward(req, resp);
         }
     }
 

@@ -71,8 +71,36 @@ public abstract class ItemDAO {
     }
 
     private Item map(ResultSet rs) throws SQLException {
-        return new Item(
-        );
+        Item item = new Item();
+        item.setId(rs.getInt("id"));
+        item.setName(rs.getString("name"));
+        // Try to get price as BigDecimal if possible, else as double
+        try {
+            item.setPrice(rs.getBigDecimal("price"));
+        } catch (Exception e) {
+            item.setPrice(rs.getDouble("price"));
+        }
+        // Support both 'stock' and 'stock_quantity' column names
+        try {
+            item.setStock(rs.getInt("stock"));
+        } catch (SQLException e) {
+            try {
+                item.setStockQuantity(rs.getInt("stock_quantity"));
+            } catch (SQLException ex) {
+                // ignore
+            }
+        }
+        try {
+            item.setDescription(rs.getString("description"));
+        } catch (SQLException e) {
+            // ignore if column doesn't exist
+        }
+        try {
+            item.setCategory(rs.getString("category"));
+        } catch (SQLException e) {
+            // ignore if column doesn't exist
+        }
+        return item;
     }
 
     public void decreaseStock(int itemId, int qty){

@@ -39,8 +39,8 @@
                         <i class="fas fa-chevron-down ml-auto"></i>
                     </button>
                     <div id="usersMenu" class="hidden ml-6 mt-1 space-y-1">
-                        <a href="<%= request.getContextPath() %>/auth/users.jsp" class="block px-3 py-2 rounded hover:bg-gray-100">User List</a>
-                        <a href="<%= request.getContextPath() %>/auth/register.jsp" class="block px-3 py-2 rounded hover:bg-gray-100">Add User</a>
+                        <a href="<%= request.getContextPath() %>/user/uList.jsp" class="block px-3 py-2 rounded hover:bg-gray-100">User List</a>
+                        <a href="<%= request.getContextPath() %>/register.jsp" class="block px-3 py-2 rounded hover:bg-gray-100">Add User</a>
                     </div>
                 </div>
 
@@ -52,9 +52,8 @@
                         <i class="fas fa-chevron-down ml-auto"></i>
                     </button>
                     <div id="customersMenu" class="hidden ml-6 mt-1 space-y-1">
-                        <a href="<%= request.getContextPath() %>/customer/CList.jsp" class="block px-3 py-2 rounded hover:bg-gray-100">List</a>
-                        <a href="<%= request.getContextPath() %>/customer/CForm.jsp" class="block px-3 py-2 rounded hover:bg-gray-100">Add New</a>
-                        <a href="<%= request.getContextPath() %>/customer/CView.jsp" class="block px-3 py-2 rounded hover:bg-gray-100">View</a>
+                        <a href="<%= request.getContextPath() %>/customers" class="block px-3 py-2 rounded hover:bg-gray-100">List</a>
+                        <a href="<%= request.getContextPath() %>/customer/cForm.jsp" class="block px-3 py-2 rounded hover:bg-gray-100">Add New</a>
                     </div>
                 </div>
 
@@ -66,24 +65,24 @@
                         <i class="fas fa-chevron-down ml-auto"></i>
                     </button>
                     <div id="itemsMenu" class="hidden ml-6 mt-1 space-y-1">
-                        <a href="<%= request.getContextPath() %>/items/itemList.jsp" class="block px-3 py-2 rounded hover:bg-gray-100">List</a>
+                        <a href="<%= request.getContextPath() %>/items" class="block px-3 py-2 rounded hover:bg-gray-100">List</a>
                         <a href="<%= request.getContextPath() %>/items/itemForm.jsp" class="block px-3 py-2 rounded hover:bg-gray-100">Add Item</a>
                     </div>
                 </div>
 
-                <!-- Billing -->
-                <div>
-                    <button onclick="toggleDropdown('billingMenu')"
-                            class="w-full flex items-center p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition">
-                        <i class="fas fa-receipt mr-3"></i> Billing
-                        <i class="fas fa-chevron-down ml-auto"></i>
-                    </button>
-                    <div id="billingMenu" class="hidden ml-6 mt-1 space-y-1">
-                        <a href="<%= request.getContextPath() %>/billing/list.jsp" class="block px-3 py-2 rounded hover:bg-gray-100">Bill List</a>
-                        <a href="<%= request.getContextPath() %>/billing/new.jsp" class="block px-3 py-2 rounded hover:bg-gray-100">New Bill</a>
-                        <a href="<%= request.getContextPath() %>/billing/reciept.jsp" class="block px-3 py-2 rounded hover:bg-gray-100">Receipts</a>
-                    </div>
-                </div>
+<%--                <!-- Billing -->--%>
+<%--                <div>--%>
+<%--                    <button onclick="toggleDropdown('billingMenu')"--%>
+<%--                            class="w-full flex items-center p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition">--%>
+<%--                        <i class="fas fa-receipt mr-3"></i> Billing--%>
+<%--                        <i class="fas fa-chevron-down ml-auto"></i>--%>
+<%--                    </button>--%>
+<%--                    <div id="billingMenu" class="hidden ml-6 mt-1 space-y-1">--%>
+<%--                        <a href="<%= request.getContextPath() %>/billing/list.jsp" class="block px-3 py-2 rounded hover:bg-gray-100">Bill List</a>--%>
+<%--                        <a href="<%= request.getContextPath() %>/billing/new.jsp" class="block px-3 py-2 rounded hover:bg-gray-100">New Bill</a>--%>
+<%--                        <a href="<%= request.getContextPath() %>/billing/reciept.jsp" class="block px-3 py-2 rounded hover:bg-gray-100">Receipts</a>--%>
+<%--                    </div>--%>
+<%--                </div>--%>
 
                 <!-- Reports -->
                 <div>

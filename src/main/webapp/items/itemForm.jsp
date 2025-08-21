@@ -22,7 +22,7 @@
     </label>
     <label class="block">
         <span class="text-gray-700">Price</span>
-        <input type="number" step="0.01" min="0" name="price" required value="<%= editing ? it.getPrice() : "" %>" class="mt-1 w-full border p-2 rounded"/>
+        <input type="number" step="0.01" min="0" name="price" required value="<%= editing && it.getPrice() != null ? it.getPrice().toPlainString() : "" %>" class="mt-1 w-full border p-2 rounded"/>
     </label>
     <label class="block">
         <span class="text-gray-700">Stock</span>

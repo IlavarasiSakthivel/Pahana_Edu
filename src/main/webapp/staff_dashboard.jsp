@@ -24,25 +24,74 @@
                 <h2 class="text-xl font-bold text-sky-700 mt-3">Staff Panel</h2>
             </div>
             <nav class="flex-1 space-y-2">
+                <!-- Dashboard -->
                 <a href="<%= request.getContextPath() %>/staff_dashboard.jsp" class="flex items-center p-3 rounded-lg text-sky-700 font-semibold bg-sky-100 hover:bg-sky-200 transition">
                     <i class="fas fa-tachometer-alt mr-3"></i> Dashboard
                 </a>
-                <a href="customers.jsp" class="flex items-center p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition">
-                    <i class="fas fa-users mr-3"></i> Customers
-                </a>
-                <a href="items.jsp" class="flex items-center p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition">
-                    <i class="fas fa-boxes mr-3"></i> Items
-                </a>
-                <a href="bills.jsp" class="flex items-center p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition">
-                    <i class="fas fa-receipt mr-3"></i> Billing
-                </a>
-                <a href="reports.jsp" class="flex items-center p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition">
-                    <i class="fas fa-chart-bar mr-3"></i> Reports
-                </a>
-                <a href="help.jsp" class="flex items-center p-3 rounded-lg text-sky-700 hover:bg-sky-100 transition">
+
+                <!-- Customers -->
+                <div>
+                    <button onclick="toggleDropdown('customersMenuStaff')" type="button"
+                            class="w-full flex items-center p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition">
+                        <i class="fas fa-users mr-3"></i> Customers
+                        <i class="fas fa-chevron-down ml-auto"></i>
+                    </button>
+                    <div id="customersMenuStaff" class="hidden ml-6 mt-1 space-y-1">
+                        <a href="<%= request.getContextPath() %>/customers" class="block px-3 py-2 rounded hover:bg-gray-100">List</a>
+                        <a href="<%= request.getContextPath() %>/customer/cForm.jsp" class="block px-3 py-2 rounded hover:bg-gray-100">Add New</a>
+                    </div>
+                </div>
+
+                <!-- Items -->
+                <div>
+                    <button onclick="toggleDropdown('itemsMenuStaff')" type="button"
+                            class="w-full flex items-center p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition">
+                        <i class="fas fa-boxes mr-3"></i> Items
+                        <i class="fas fa-chevron-down ml-auto"></i>
+                    </button>
+                    <div id="itemsMenuStaff" class="hidden ml-6 mt-1 space-y-1">
+                        <a href="<%= request.getContextPath() %>/items" class="block px-3 py-2 rounded hover:bg-gray-100">List</a>
+                        <a href="<%= request.getContextPath() %>/items/itemForm.jsp" class="block px-3 py-2 rounded hover:bg-gray-100">Add Item</a>
+                    </div>
+                </div>
+
+                <!-- Billing -->
+                <div>
+                    <button onclick="toggleDropdown('billingMenuStaff')" type="button"
+                            class="w-full flex items-center p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition">
+                        <i class="fas fa-receipt mr-3"></i> Billing
+                        <i class="fas fa-chevron-down ml-auto"></i>
+                    </button>
+                    <div id="billingMenuStaff" class="hidden ml-6 mt-1 space-y-1">
+                        <a href="<%= request.getContextPath() %>/bills" class="block px-3 py-2 rounded hover:bg-gray-100">Bill List</a>
+                        <a href="<%= request.getContextPath() %>/billing/new.jsp" class="block px-3 py-2 rounded hover:bg-gray-100">New Bill</a>
+                        <a href="<%= request.getContextPath() %>/billing/reciept.jsp" class="block px-3 py-2 rounded hover:bg-gray-100">Receipts</a>
+                    </div>
+                </div>
+
+                <!-- Reports -->
+                <div>
+                    <button onclick="toggleDropdown('reportsMenuStaff')" type="button"
+                            class="w-full flex items-center p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition">
+                        <i class="fas fa-chart-bar mr-3"></i> Reports
+                        <i class="fas fa-chevron-down ml-auto"></i>
+                    </button>
+                    <div id="reportsMenuStaff" class="hidden ml-6 mt-1 space-y-1">
+                        <a href="<%= request.getContextPath() %>/reports/sales.jsp" class="block px-3 py-2 rounded hover:bg-gray-100">Sales</a>
+                        <a href="<%= request.getContextPath() %>/reports/stock.jsp" class="block px-3 py-2 rounded hover:bg-gray-100">Stock</a>
+                    </div>
+                </div>
+
+                <!-- Help -->
+                <a href="<%= request.getContextPath() %>/help.jsp" class="flex items-center p-3 rounded-lg text-sky-700 hover:bg-sky-100 transition">
                     <i class="fas fa-question-circle mr-3"></i> Help
                 </a>
             </nav>
+            <script>
+                function toggleDropdown(id) {
+                    document.getElementById(id).classList.toggle('hidden');
+                }
+            </script>
             <div class="mt-auto text-center">
                 <a href="<%= request.getContextPath() %>/index.jsp" class="inline-flex items-center justify-center bg-sky-600 hover:bg-sky-700 text-white font-bold py-2 px-5 rounded shadow transition-all duration-200 w-full">
                     <i class="fas fa-sign-out-alt mr-2"></i>Logout

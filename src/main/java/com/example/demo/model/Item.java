@@ -6,7 +6,7 @@ public class Item {
     private int id;
     private String name;
     private String description;
-    private double price;
+    private BigDecimal price;
     private int stockQuantity;
     private String category;
 
@@ -32,23 +32,17 @@ public class Item {
         this.description = description;
     }
     public BigDecimal getPrice() {
-        return java.math.BigDecimal.valueOf(price);
-    }
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    // For servlet compatibility - handle BigDecimal
-    public void setPrice(java.math.BigDecimal price) {
-        this.price = price != null ? price.doubleValue() : 0.0;
-    }
-
-    // Optional: for direct double access
-    public double getPriceAsDouble() {
         return price;
     }
-    public java.math.BigDecimal getPriceAsBigDecimal() {
-        return java.math.BigDecimal.valueOf(price);
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+    public void setPrice(double price) {
+        this.price = BigDecimal.valueOf(price);
+    }
+
+    public BigDecimal getPriceAsBigDecimal() {
+        return price;
     }
 
     public int getStockQuantity() {

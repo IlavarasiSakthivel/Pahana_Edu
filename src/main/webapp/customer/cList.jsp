@@ -1,8 +1,15 @@
 <%@ page import="java.util.List"%>
 <%@ page import="com.example.demo.model.Customer" %>
-
 <%
     List<Customer> customers = (List<Customer>) request.getAttribute("customers");
+%>
+<%!
+    // Declare the method in a JSP declaration block, not a scriptlet
+    public double computeBill(int units) {
+        if (units <= 50) return units * 5;
+        if (units <= 100) return 50 * 5 + (units - 50) * 7;
+        return 50 * 5 + 50 * 7 + (units - 100) * 10;
+    }
 %>
 <!DOCTYPE html>
 <html>
@@ -28,8 +35,11 @@
     <table class="min-w-full bg-white border">
         <thead class="bg-sky-100">
         <tr>
-            <th class="p-2 border">Account</th><th class="p-2 border">Name</th>
-            <th class="p-2 border">Phone</th><th class="p-2 border">Units</th>
+            <th class="p-2 border">Account</th>
+            <th class="p-2 border">Name</th>
+            <th class="p-2 border">Phone</th>
+            <th class="p-2 border">Units</th>
+            <th class="p-2 border">Bill Amount</th>
             <th class="p-2 border">Actions</th>
         </tr>
         </thead>
@@ -40,6 +50,7 @@
             <td class="p-2 border"><%= c.getName() %></td>
             <td class="p-2 border"><%= c.getTelephone() %></td>
             <td class="p-2 border"><%= c.getUnitsConsumed() %></td>
+            <td class="p-2 border">Rs. <%= String.format("%.2f", computeBill(c.getUnitsConsumed())) %></td>
             <td class="p-2 border">
                 <a class="text-sky-700" href="<%=request.getContextPath()%>/customers?action=view&id=<%=c.getId()%>">View</a> |
                 <a class="text-green-700" href="<%=request.getContextPath()%>/customers?action=edit&id=<%=c.getId()%>">Edit</a> |
