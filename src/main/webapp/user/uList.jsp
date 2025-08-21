@@ -1,7 +1,10 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.example.demo.model.User" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%-- The servlet/controller should set request.setAttribute("users", users); --%>
+<%
+    // Fix: get users from request attribute at the top so it's available in scriptlets
+    List<User> users = (List<User>) request.getAttribute("users");
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,7 +17,6 @@
     <a href="<%=request.getContextPath()%>/register.jsp" class="px-3 py-1 bg-sky-800 rounded">Add User</a>
 </div>
 <div class="p-6 max-w-4xl mx-auto">
-    <!-- Remove this warning after your servlet/controller sets the users attribute correctly -->
     <div class="bg-white rounded-lg shadow p-6">
         <div class="overflow-x-auto">
             <table class="min-w-full bg-white border">
@@ -47,8 +49,7 @@
                 </tr>
                 <%
                        }
-                   } else if (users != null) {
-                %>
+                   } else { %>
                 <tr>
                     <td colspan="5" class="p-2 border text-center text-gray-500">No users found.</td>
                 </tr>

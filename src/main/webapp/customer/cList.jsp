@@ -21,7 +21,21 @@
 <div class="p-6 flex justify-between bg-sky-700 text-white">
     <h1 class="text-xl font-bold">Customers</h1>
     <div>
-        <a href="<%=request.getContextPath()%>/dashboards/admin-dashboard.jsp" class="px-3 py-1 bg-sky-800 rounded">Dashboard</a>
+        <%
+            // Get user role from session (assumes it's set as "role" or use loggedUser)
+            String role = (String) session.getAttribute("role");
+            if (role == null) {
+                com.example.demo.model.User loggedUser = (com.example.demo.model.User) session.getAttribute("loggedUser");
+                if (loggedUser != null) {
+                    role = loggedUser.getRole();
+                }
+            }
+            String dashboardUrl = "admin_dashboard.jsp";
+            if (role != null && (role.equalsIgnoreCase("MANAGER") || role.equalsIgnoreCase("CASHIER"))) {
+                dashboardUrl = "staff_dashboard.jsp";
+            }
+        %>
+        <a href="<%=request.getContextPath()%>/<%=dashboardUrl%>" class="bg-sky-800 px-4 py-2 rounded shadow hover:bg-sky-900 transition">Dashboard</a>
         <a href="<%=request.getContextPath()%>/customers?action=new" class="px-3 py-1 bg-green-600 rounded">New</a>
     </div>
 </div>

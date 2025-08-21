@@ -13,7 +13,23 @@
 <body class="bg-sky-50">
 <div class="p-6 bg-sky-700 text-white flex justify-between">
     <h1 class="text-xl font-bold">Recent Bills</h1>
-    <a href="<%=request.getContextPath()%>/bills?action=new" class="bg-green-600 px-3 py-1 rounded">New Bill</a>
+    <a href="<%=request.getContextPath()%>/bills?action=new" class="bg-green-600 px-3 py-1 rounded mr-2">New Bill</a>
+    <%
+        // Get user role from session (assumes it's set as "role" or use loggedUser)
+        String role = (String) session.getAttribute("role");
+        if (role == null) {
+            com.example.demo.model.User loggedUser = (com.example.demo.model.User) session.getAttribute("loggedUser");
+            if (loggedUser != null) {
+                role = loggedUser.getRole();
+            }
+        }
+        String dashboardUrl = "admin_dashboard.jsp";
+        if (role != null && (role.equalsIgnoreCase("MANAGER") || role.equalsIgnoreCase("CASHIER"))) {
+            dashboardUrl = "staff_dashboard.jsp";
+        }
+    %>
+    <a href="<%=request.getContextPath()%>/<%=dashboardUrl%>" class="bg-sky-800 text-white px-4 py-2 rounded shadow hover:bg-sky-900 transition">Dashboard</a>
+
 </div>
 
 <div class="p-6">

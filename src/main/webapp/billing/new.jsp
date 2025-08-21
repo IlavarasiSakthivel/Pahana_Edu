@@ -34,17 +34,19 @@
 <body class="bg-sky-50">
 <div class="max-w-3xl mx-auto mt-10 bg-white p-8 rounded shadow">
     <h1 class="text-2xl font-bold mb-6 text-sky-700">Create New Bill</h1>
+    <!-- Notification area -->
+    <div id="formNotification" class="hidden mb-4 p-3 rounded bg-red-100 text-red-700 font-semibold"></div>
     <!-- Debug: print customers and items size -->
     <div style="display:none">
         Customers size: <c:out value="${fn:length(customers)}"/>
         Items size: <c:out value="${fn:length(items)}"/>
     </div>
-    <form method="post" action="${pageContext.request.contextPath}/bills?action=create">
+    <form method="post" action="${pageContext.request.contextPath}/bills?action=create" onsubmit="return validateBillForm();">
         <div class="mb-4">
             <label class="block mb-1 font-medium">Customer</label>
             <div class="flex gap-2">
-                <input type="text" name="customerNameInput" placeholder="Type customer name or account" class="flex-1 border rounded px-3 py-2" autocomplete="off"/>
-                <select name="customerAccountNumber" class="flex-1 border rounded px-3 py-2">
+                <input type="text" name="customerNameInput" id="customerNameInput" placeholder="Type customer name or account" class="flex-1 border rounded px-3 py-2" autocomplete="off"/>
+                <select name="customerAccountNumber" id="customerAccountNumber" class="flex-1 border rounded px-3 py-2">
                     <option value="">-- Select Customer --</option>
                     <% if (customers != null) {
                         for (Customer c : customers) { %>
@@ -71,8 +73,8 @@
                 <tr>
                     <td class="p-2 border">
                         <div class="flex gap-2">
-                            <input type="text" name="itemNameInput[]" placeholder="Type item name" class="flex-1 border rounded px-2 py-1" autocomplete="off"/>
-                            <select name="itemId[]" class="flex-1 border rounded px-2 py-1">
+                            <input type="text" name="itemNameInput[]" class="itemNameInput flex-1 border rounded px-2 py-1" placeholder="Type item name" autocomplete="off"/>
+                            <select name="itemId[]" class="itemId flex-1 border rounded px-2 py-1">
                                 <option value="">-- Select Item --</option>
                                 <% if (items != null) {
                                     for (Item i : items) { %>
@@ -86,7 +88,7 @@
                         </div>
                     </td>
                     <td class="p-2 border">
-                        <input type="number" name="qty[]" min="1" class="w-20 border rounded px-2 py-1" required/>
+                        <input type="number" name="qty[]" min="1" class="qty w-20 border rounded px-2 py-1" required/>
                     </td>
                     <td class="p-2 border text-center">
                         <button type="button" onclick="addRow()" class="text-green-600 px-2">+</button>
@@ -97,12 +99,82 @@
             </table>
         </div>
         <div class="mt-6 flex justify-end">
-            <button type="submit" class="bg-sky-700 hover:bg-sky-800 text-white px-6 py-2 rounded">Create Bill</button>
+            <button type="submit" class="bg-sky-700 hover:bg-sky-800 text-white px-6 py-2 rounded mr-2">Create Bill</button>
+            <%
+                // Get user role from session (assumes it's set as "role" or use loggedUser)
+                String role = (String) session.getAttribute("role");
+                if (role == null) {
+                    com.example.demo.model.User loggedUser = (com.example.demo.model.User) session.getAttribute("loggedUser");
+                    if (loggedUser != null) {
+                        role = loggedUser.getRole();
+                    }
+                }
+                String dashboardUrl = "admin_dashboard.jsp";
+                if (role != null && (role.equalsIgnoreCase("MANAGER") || role.equalsIgnoreCase("CASHIER"))) {
+                    dashboardUrl = "staff_dashboard.jsp";
+                }
+            %>
+            <a href="<%=request.getContextPath()%>/<%=dashboardUrl%>" class="bg-sky-800 text-white px-4 py-2 rounded shadow hover:bg-sky-900 transition">Cancel</a>
+
         </div>
     </form>
     <div class="text-xs text-gray-500 mt-4">
         If you fill both the input and dropdown for customer or item, the dropdown value will be used if selected; otherwise, the input value will be used.
     </div>
+    <script>
+        function showFormNotification(msg) {
+            var notif = document.getElementById('formNotification');
+            notif.textContent = msg;
+            notif.classList.remove('hidden');
+            notif.scrollIntoView({behavior: "smooth"});
+        }
+        function hideFormNotification() {
+            var notif = document.getElementById('formNotification');
+            notif.classList.add('hidden');
+            notif.textContent = '';
+        }
+        function validateBillForm() {
+            hideFormNotification();
+            // Customer validation: at least one of dropdown or input must be filled
+            var customerDropdown = document.getElementById('customerAccountNumber');
+            var customerInput = document.getElementById('customerNameInput');
+            if (
+                (!customerDropdown.value || customerDropdown.value.trim() === "") &&
+                (!customerInput.value || customerInput.value.trim() === "")
+            ) {
+                showFormNotification("Please select a customer from the dropdown or enter a customer name/account.");
+                customerDropdown.focus();
+                return false;
+            }
+
+            // Items validation: at least one item row with either dropdown or input filled and quantity > 0
+            var table = document.getElementById('itemsTable').getElementsByTagName('tbody')[0];
+            var rows = table.getElementsByTagName('tr');
+            var validItemFound = false;
+            for (var i = 0; i < rows.length; i++) {
+                var itemDropdown = rows[i].querySelector('.itemId');
+                var itemInput = rows[i].querySelector('.itemNameInput');
+                var qtyInput = rows[i].querySelector('.qty');
+                var itemFilled = (itemDropdown && itemDropdown.value && itemDropdown.value.trim() !== "") ||
+                                 (itemInput && itemInput.value && itemInput.value.trim() !== "");
+                var qtyFilled = qtyInput && qtyInput.value && parseInt(qtyInput.value) > 0;
+                if (itemFilled && qtyFilled) {
+                    validItemFound = true;
+                }
+                // If dropdown is not selected but input is filled, show notification (not error, just info)
+                if ((!itemDropdown.value || itemDropdown.value.trim() === "") &&
+                    itemInput.value && itemInput.value.trim() !== "" && qtyFilled) {
+                    showFormNotification("Note: You are creating a bill with a custom item name. Make sure the item exists or will be handled manually.");
+                    // Do not return false, just notify
+                }
+            }
+            if (!validItemFound) {
+                showFormNotification("Please enter at least one item (dropdown or input) and a valid quantity.");
+                return false;
+            }
+            return true;
+        }
+    </script>
 </div>
 </body>
 </html>

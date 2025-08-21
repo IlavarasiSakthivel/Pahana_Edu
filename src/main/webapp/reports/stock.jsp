@@ -16,17 +16,57 @@
 <head>
     <title>Stock Report</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        function exportTableToCSV(tableId, filename) {
+            var csv = [];
+            var rows = document.querySelectorAll("#" + tableId + " tr");
+            for (var i = 0; i < rows.length; i++) {
+                var row = [], cols = rows[i].querySelectorAll("th, td");
+                for (var j = 0; j < cols.length; j++)
+                    row.push('"' + cols[j].innerText.replace(/"/g, '""') + '"');
+                csv.push(row.join(","));
+            }
+            // Download CSV
+            var csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
+            var downloadLink = document.createElement("a");
+            downloadLink.download = filename;
+            downloadLink.href = window.URL.createObjectURL(csvFile);
+            downloadLink.style.display = "none";
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        }
+    </script>
 </head>
 <body class="bg-sky-50">
 <div class="p-6 flex justify-between bg-sky-700 text-white">
     <h1 class="text-xl font-bold">Stock Report</h1>
-    <a href="<%=request.getContextPath()%>/admin_dashboard.jsp" class="px-3 py-1 bg-sky-800 rounded">Dashboard</a>
+    <div class="flex gap-2">
+        <%
+            // Get user role from session (assumes it's set as "role" or use loggedUser)
+            String role = (String) session.getAttribute("role");
+            if (role == null) {
+                com.example.demo.model.User loggedUser = (com.example.demo.model.User) session.getAttribute("loggedUser");
+                if (loggedUser != null) {
+                    role = loggedUser.getRole();
+                }
+            }
+            String dashboardUrl = "admin_dashboard.jsp";
+            if (role != null && (role.equalsIgnoreCase("MANAGER") || role.equalsIgnoreCase("CASHIER"))) {
+                dashboardUrl = "staff_dashboard.jsp";
+            }
+        %>
+        <a href="<%=request.getContextPath()%>/<%=dashboardUrl%>" class="bg-sky-800 px-4 py-2 rounded shadow hover:bg-sky-900 transition">Dashboard</a>
+    </div>
 </div>
 <div class="p-6 max-w-5xl mx-auto">
     <div class="bg-white rounded-lg shadow p-6 mb-8">
-        <h2 class="text-xl font-semibold text-sky-800 mb-4">Low Stock Items</h2>
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-semibold text-sky-800">Low Stock Items</h2>
+            <button onclick="exportTableToCSV('lowStockTable', 'low_stock_items.csv')" class="bg-sky-700 text-white px-4 py-1 rounded hover:bg-sky-800 transition">Export CSV</button>
+        </div>
         <div class="overflow-x-auto">
-            <table class="min-w-full bg-white border">
+            <table id="lowStockTable" class="min-w-full bg-white border">
                 <thead class="bg-sky-100">
                 <tr>
                     <th class="p-2 border">ID</th>
@@ -61,9 +101,12 @@
         </div>
     </div>
     <div class="bg-white rounded-lg shadow p-6">
-        <h2 class="text-xl font-semibold text-sky-800 mb-4">All Items Stock</h2>
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-semibold text-sky-800">All Items Stock</h2>
+            <button onclick="exportTableToCSV('allStockTable', 'all_stock_items.csv')" class="bg-sky-700 text-white px-4 py-1 rounded hover:bg-sky-800 transition">Export CSV</button>
+        </div>
         <div class="overflow-x-auto">
-            <table class="min-w-full bg-white border">
+            <table id="allStockTable" class="min-w-full bg-white border">
                 <thead class="bg-sky-100">
                 <tr>
                     <th class="p-2 border">ID</th>
