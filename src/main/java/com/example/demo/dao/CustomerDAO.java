@@ -3,11 +3,25 @@ package com.example.demo.dao;
 import com.example.demo.model.Customer;
 import com.example.demo.util.DBConnection;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
-import java.sql.*;
+
+import com.example.demo.model.Customer;
+import com.example.demo.util.DBConnection;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 import java.util.ArrayList;
 
-public class CustomerDAO {
+public abstract class CustomerDAO {
 
     public List<Customer> findAll(String q) {
         List<Customer> data = new ArrayList<>();
@@ -86,4 +100,20 @@ public class CustomerDAO {
                 rs.getInt("units_consumed")
         );
     }
+
+    public abstract Customer getCustomerByAccountNumber(String accountNumber) throws Exception;
+
+    public abstract Customer getCustomerById(int id) throws Exception;
+
+    public abstract List<Customer> getAllCustomers() throws Exception;
+
+    public abstract void addCustomer(Customer customer) throws Exception;
+
+    public abstract void saveCustomer(Customer customer) throws Exception;
+
+    public abstract void updateCustomer(Customer customer) throws Exception;
+
+    public abstract void deleteCustomer(int id) throws Exception;
+
+    public abstract void deleteCustomer(String accountNumber) throws Exception;
 }

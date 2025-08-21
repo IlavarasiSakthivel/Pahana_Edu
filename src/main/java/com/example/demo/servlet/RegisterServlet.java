@@ -37,6 +37,6 @@ public class RegisterServlet extends HttpServlet {
 
         userService.register(name, email, password);
 
-        response.sendRedirect("login.jsp");
+        response.sendRedirect("index.jsp");
     }
 }

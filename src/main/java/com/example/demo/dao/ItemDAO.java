@@ -3,12 +3,11 @@ package com.example.demo.dao;
 import com.example.demo.model.Item;
 import com.example.demo.util.DBConnection;
 
-import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemDAO {
+public abstract class ItemDAO {
 
     public List<Item> findAll(String q) {
         List<Item> data = new ArrayList<>();
@@ -45,7 +44,7 @@ public class ItemDAO {
         try (Connection c = DBConnection.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, it.getName());
-            ps.setBigDecimal(2, it.getPrice());
+            ps.setBigDecimal(2, it.getPriceAsBigDecimal());
             ps.setInt(3, it.getStock());
             ps.executeUpdate();
         } catch (Exception e) { e.printStackTrace(); }
@@ -56,7 +55,7 @@ public class ItemDAO {
         try (Connection c = DBConnection.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, it.getName());
-            ps.setBigDecimal(2, it.getPrice());
+            ps.setBigDecimal(2, it.getPriceAsBigDecimal());
             ps.setInt(3, it.getStock());
             ps.setInt(4, it.getId());
             ps.executeUpdate();
@@ -73,10 +72,6 @@ public class ItemDAO {
 
     private Item map(ResultSet rs) throws SQLException {
         return new Item(
-                rs.getInt("id"),
-                rs.getString("name"),
-                rs.getBigDecimal("price"),
-                rs.getInt("stock")
         );
     }
 
@@ -90,4 +85,16 @@ public class ItemDAO {
             ps.executeUpdate();
         } catch (Exception e) { e.printStackTrace(); }
     }
+
+    public abstract Item getItemById(int id) throws Exception;
+
+    public abstract List<Item> getAllItems() throws Exception;
+
+    public abstract void saveItem(Item item) throws Exception;
+
+    public abstract void updateItem(Item item) throws Exception;
+
+    public abstract void deleteItem(int id) throws Exception;
+
+    public abstract List<Item> getLowStockItems() throws Exception;
 }

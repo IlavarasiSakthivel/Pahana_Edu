@@ -11,7 +11,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,29 +20,36 @@ public class BillServlet extends HttpServlet {
     private final CustomerService customerService = new CustomerService();
     private final ItemService itemService = new ItemService();
 
-    @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         String action = req.getParameter("action");
         if (action == null) action = "list";
+
         switch (action) {
             case "new":
                 req.setAttribute("customers", customerService.list(null));
                 req.setAttribute("items", itemService.list(null));
                 req.getRequestDispatcher("/bills/new.jsp").forward(req, resp);
                 break;
+
             case "receipt":
                 int billId = Integer.parseInt(req.getParameter("id"));
                 Bill bill = billingService.getBill(billId);
                 req.setAttribute("bill", bill);
                 req.getRequestDispatcher("/bills/receipt.jsp").forward(req, resp);
                 break;
+
             default:
-                req.setAttribute("bills", billingService.recent(50));
+                List<Bill> bills = billingService.recent(50);
+                if (bills == null) bills = new ArrayList<>();
+                req.setAttribute("bills", bills);
                 req.getRequestDispatcher("/bills/list.jsp").forward(req, resp);
         }
     }
 
-    @Override protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         String action = req.getParameter("action");
         if ("create".equals(action)) {
@@ -51,6 +57,7 @@ public class BillServlet extends HttpServlet {
                 int customerId = Integer.parseInt(req.getParameter("customerId"));
                 String[] itemIds = req.getParameterValues("itemId");
                 String[] qtys = req.getParameterValues("qty");
+
                 List<BillItem> items = new ArrayList<>();
                 for (int i = 0; i < itemIds.length; i++) {
                     int id = Integer.parseInt(itemIds[i]);
@@ -63,15 +70,17 @@ public class BillServlet extends HttpServlet {
                     bi.setUnitPrice(it.getPrice());
                     items.add(bi);
                 }
+
                 int billId = billingService.createBill(customerId, items);
-                resp.sendRedirect(req.getContextPath()+"/bills?action=receipt&id="+billId);
+                resp.sendRedirect(req.getContextPath() + "/bills?action=receipt&id=" + billId);
+
             } catch (Exception e) {
                 e.printStackTrace();
-                req.setAttribute("errorMessage","Failed to create bill: "+e.getMessage());
+                req.setAttribute("errorMessage", "Failed to create bill: " + e.getMessage());
                 doGet(req, resp);
             }
         } else {
-            resp.sendRedirect(req.getContextPath()+"/bills");
+            resp.sendRedirect(req.getContextPath() + "/bills");
         }
     }
 }

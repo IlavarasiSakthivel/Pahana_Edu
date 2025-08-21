@@ -2,8 +2,9 @@ package com.example.demo.dao;
 
 import com.example.demo.model.User;
 import java.sql.*;
+import java.util.List;
 
-public class UserDAO {
+public abstract class UserDAO {
     private Connection conn;
 
     public UserDAO(Connection conn) {
@@ -45,4 +46,15 @@ public class UserDAO {
         return null;
     }
 
+    public abstract User findByUsername(String username) throws Exception;
+
+    public abstract User findById(int id) throws Exception;
+
+    public abstract void save(User user) throws Exception;
+
+    public abstract void update(User user) throws Exception;
+
+    public abstract void delete(int id) throws Exception;
+
+    public abstract List<User> getAllUsers() throws Exception;
 }
